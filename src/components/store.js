@@ -1,4 +1,6 @@
+// Import combineReducers from redux.
 import { createStore } from 'redux';
+import {combineReducers} from 'redux';
 import allRecipesData from './data.js';
 
 // Action Creators
@@ -25,7 +27,6 @@ const setSearchTerm = (term) => {
   }
 }
 
-
 const clearSearchTerm = () => {
   return {
     type: 'searchTerm/clearSearchTerm'
@@ -35,8 +36,8 @@ const clearSearchTerm = () => {
 const loadData = () => {
   return { 
     type: 'allRecipes/loadData', 
-    payload: allRecipesData
-  }; 
+    payload: allRecipeData
+  };
 }
 
 // Reducers
@@ -45,7 +46,7 @@ const loadData = () => {
 const initialAllRecipes = [];
 const allRecipesReducer = (allRecipes = initialAllRecipes, action) => {
   switch(action.type) {
-    case 'allRecipes/loadData':
+    case 'allRecipes/loadData': 
       return action.payload
     default:
       return allRecipes;
@@ -56,37 +57,34 @@ const initialSearchTerm = '';
 const searchTermReducer = (searchTerm = initialSearchTerm, action) => {
   switch(action.type) {
     case 'searchTerm/setSearchTerm':
-      return action.payload;
+      return action.payload
     case 'searchTerm/clearSearchTerm':
-      return '';
+      return ''
     default: 
       return searchTerm;
   }
 }
 
-// Create the initial state for this reducer.
-var initialFavoriteRecipes = [];
+const initialFavoriteRecipes = [];
 const favoriteRecipesReducer = (favoriteRecipes = initialFavoriteRecipes, action) => {
   switch(action.type) {
-    
-    // Add action.type cases here.
     case 'favoriteRecipes/addRecipe':
-      return [...favoriteRecipes, action.payload];
+      return [...favoriteRecipes, action.payload]
     case 'favoriteRecipes/removeRecipe':
-      return favoriteRecipes.filter(element => element.id !== action.payload.id);
+      return favoriteRecipes.filter(recipe => {
+        return recipe.id !== action.payload.id
+      });
     default:
       return favoriteRecipes;
-
   }
 }
 
-const rootReducer = (state = {}, action) => {
-  const nextState = {
-    allRecipes: allRecipesReducer(state.allRecipes, action),
-    searchTerm: searchTermReducer(state.searchTerm, action),
-    favoriteRecipes: favoriteRecipesReducer(state.favoriteRecipes, action)
-  } 
-  return nextState;
-}
+// Create `rootReducer` here using combineReducers().
+const reducers = {
+  allRecipes: allRecipesReducer, 
+  favoriteRecipes: favoriteRecipesReducer,
+  searchTerm: searchTermReducer
+};
 
+const rootReducer = combineReducers(reducers);
 const store = createStore(rootReducer);
